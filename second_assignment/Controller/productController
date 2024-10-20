@@ -1,0 +1,27 @@
+function getAll(req, res){
+    res.writeHead(200).end('All products in the catalog');
+}
+
+function read(req, res, id){
+    console.log(typeof id);
+    res.end(`get post with ${id}`);
+
+}
+function create(req, res, id){
+    res.end(`creating new post with ${id}`);
+
+}
+
+function update(req, res, id){
+    res.end(`update post with ${id}`);
+
+}
+
+function remove(req, res, id){
+    res.end(`delete post with ${id}`);
+
+}
+
+module.exports = {
+    create, read, update, remove, getAll
+}
