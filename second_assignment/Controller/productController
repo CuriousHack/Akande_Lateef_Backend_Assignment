@@ -1,27 +1,175 @@
-function getAll(req, res){
-    res.writeHead(200).end('All products in the catalog');
+const path = require('path');
+const fs = require('fs');
+
+
+const productFilePath = path.join(__dirname, '../Database', 'productDB.json');
+
+//get all products from the database
+function getAllProducts(req, res){
+    fs.readFile(productFilePath, 'utf8', (err, data) => {
+        if(err){
+            console.log(err);
+            res.end();
+        }
+        const products = JSON.parse(data);
+        res.writeHead(200).end(JSON.stringify(products));
+    });
+
+    
 }
 
-function read(req, res, id){
-    console.log(typeof id);
-    res.end(`get post with ${id}`);
+//get a single product from the database
+function getProductById(req, res, id){
+
+    fs.readFile(productFilePath, 'utf8', (err, data) => {
+        if(err){
+            console.log(err);
+            res.end();
+        }
+        const products = JSON.parse(data);
+
+        // get the index of the product 
+        const productIndex = products.findIndex((product) => {
+            return product.id === id;
+        });
+
+        if(productIndex === -1){
+            console.log('product not found');
+        }
+        
+        res.end(JSON.stringify(products[productIndex]));
+    });
 
 }
-function create(req, res, id){
-    res.end(`creating new post with ${id}`);
+//enter a new product into the database
+function createProduct(req, res){
+    let body = '';
+    // res.end(`creating a new post`);
+    req.on('data', (chunk) => {
+        body += chunk.toString();
+    });
+    req.on('end', () => {
+        const newProduct = JSON.parse(body);
+        // console.log(newProduct);
+        //read the productdb files
+        fs.readFile(productFilePath, 'utf-8', (err, data) => {
+            if(err){
+                console.log("unable to fetch products")
+                res.end();
+            }else{
+                const products = JSON.parse(data);
+                const lastProductId = products[products.length - 1].id;
+                newProduct.id = lastProductId + 1;
+                products.push(newProduct);
+                const allProducts = JSON.stringify(products);
+                fs.writeFile(productFilePath, allProducts, (err) => {
+                    if(err){
+                        res.writeHead(500);
+                        res.write('Unable to Save Product');
+                        res.end();
+                    }
+                    else{
+                        res.write(JSON.stringify(products));
+                        res.end();
+                    }
+                });
+                
+            }
+
+        })
+    });
 
 }
 
-function update(req, res, id){
-    res.end(`update post with ${id}`);
+//update a specific product in the database
+function updateProductById(req, res, id){
+    let body = '';
+    //get sent data to be updated
+    req.on('data', (chunk) => {
+        body += chunk.toString();
+    });
+    req.on('end', () => {
+        const updateBody = JSON.parse(body);
+        console.log(updateBody);
+        // res.end();
+
+        //retrieve all products
+        fs.readFile(productFilePath, 'utf-8', (err, data) => {
+            if(err){
+                res.writeHead(500);
+                res.write('Unable to retrieve products');
+                res.end();
+            }
+            else{
+                const products = JSON.parse(data);
+
+                const productIndex = products.findIndex((product) => product.id === id );
+                products[productIndex] = { ...products[productIndex], ...updateBody};
+                const updatedProducts = JSON.stringify(products);
+                //save product back into the database
+                fs.writeFile(productFilePath, updatedProducts, (err) => {
+                    if(err){
+                        res.writeHead(500);
+                        res.write('Unable to Update product');
+                        res.end();
+                    }else{
+                        res.writeHead(201);
+                        res.write('Product Updated Successfully');
+                        res.end();
+                    }
+                });
+                // console.log(products);
+
+                // console.log(products);
+                // res.end();
+            }
+        })
+
+
+    });
 
 }
 
-function remove(req, res, id){
-    res.end(`delete post with ${id}`);
+//delete a product from the database
+function deleteProductById(req, res, id){
+
+    // get the product from database 
+    fs.readFile(productFilePath, 'utf8', (err, data) => {
+        if(err){
+            console.log(err);
+            res.end();
+        }
+        const products = JSON.parse(data);
+
+        // get the index of the product 
+        const productIndex = products.findIndex((product) => {
+            return product.id === id;
+        });
+
+        if(productIndex === -1){
+            console.log('product not found');
+            res.writeHead(404);
+            res.end('Product Not Found');
+        }
+        else{
+            // remove product from the database 
+            products.splice(productIndex, 1);
+
+            const newProducts = JSON.stringify(products);
+            fs.writeFile(productFilePath, newProducts, (err) => {
+                if(err){
+                    res.writeHead(500);
+                    res.end("Unable to Delete File");
+                }
+                res.writeHead(200);
+                res.end(newProducts);
+            });
+        }    
+    });
+
 
 }
 
 module.exports = {
-    create, read, update, remove, getAll
+    getAllProducts, getProductById, createProduct, updateProductById, deleteProductById
 }

@@ -1,23 +1,26 @@
-const { create, read, update, remove, getAll } = require('../Controller/productController');
+// const { getAllProducts } = require('../Controller/productController');
+const { createProduct } = require('../Controller/productController');
+const { getAllProducts, getProductById, updateProductById, deleteProductById } = require('../Controller/productController');
 
 function productWithID(req, res){
     const id = req.url.split('/')[2];
+    const parsedId = parseInt(id);
+    if(isNaN(parsedId)){
+        res.writehead(400).end("Invalid Request");
+    }
     //switch between the request methods and return the corresponding controller method.
     switch(req.method){
         case'GET':
-            read(req, res, id);
-            break;
-        case 'POST':
-            create(req, res, id);
+            getProductById(req, res, parsedId);
             break;
         case 'PUT':
-            update(req, res, id);
+            updateProductById(req, res, parsedId);
             break;
         case 'PATCH':
-            update(req, res, id);
+            updateProductById(req, res, parsedId);
             break;
         case 'DELETE':
-            remove(req, res, id);
+            deleteProductById(req, res, parsedId);
             break;
         default:
             res.writeHead(400).end("Invalid User Request");
@@ -29,7 +32,10 @@ function productWithID(req, res){
 function productWithoutId(req, res){
     if(req.method === 'GET'){
         //get all products
-        getAll(req, res);
+        getAllProducts(req, res);
+    }
+    else if(req.method === 'POST'){
+        createProduct(req, res);
     }
     else{
         //return invalid request
