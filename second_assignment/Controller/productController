@@ -8,7 +8,8 @@ const productFilePath = path.join(__dirname, '../Database', 'productDB.json');
 function getAllProducts(req, res){
     fs.readFile(productFilePath, 'utf8', (err, data) => {
         if(err){
-            console.log(err);
+            res.writeHead(500);
+            res.write('Unable to fetch Products');
             res.end();
         }
         const products = JSON.parse(data);
@@ -23,7 +24,8 @@ function getProductById(req, res, id){
 
     fs.readFile(productFilePath, 'utf8', (err, data) => {
         if(err){
-            console.log(err);
+            res.writeHead(500);
+            res.write('Unable to fetch Product');
             res.end();
         }
         const products = JSON.parse(data);
@@ -34,9 +36,11 @@ function getProductById(req, res, id){
         });
 
         if(productIndex === -1){
-            console.log('product not found');
+            res.writeHead(404);
+            res.write('Product not found');
+            res.end();        
         }
-        
+        res.writeHead(200);
         res.end(JSON.stringify(products[productIndex]));
     });
 
@@ -44,24 +48,30 @@ function getProductById(req, res, id){
 //enter a new product into the database
 function createProduct(req, res){
     let body = '';
-    // res.end(`creating a new post`);
+
     req.on('data', (chunk) => {
         body += chunk.toString();
     });
     req.on('end', () => {
         const newProduct = JSON.parse(body);
-        // console.log(newProduct);
         //read the productdb files
         fs.readFile(productFilePath, 'utf-8', (err, data) => {
             if(err){
-                console.log("unable to fetch products")
+                res.writeHead(500);
+                res.write('Unable to fetch Products');
                 res.end();
+
             }else{
                 const products = JSON.parse(data);
+
                 const lastProductId = products[products.length - 1].id;
+
                 newProduct.id = lastProductId + 1;
+
                 products.push(newProduct);
+
                 const allProducts = JSON.stringify(products);
+
                 fs.writeFile(productFilePath, allProducts, (err) => {
                     if(err){
                         res.writeHead(500);
@@ -69,6 +79,7 @@ function createProduct(req, res){
                         res.end();
                     }
                     else{
+                        res.writeHead(201);
                         res.write(JSON.stringify(products));
                         res.end();
                     }
@@ -90,8 +101,6 @@ function updateProductById(req, res, id){
     });
     req.on('end', () => {
         const updateBody = JSON.parse(body);
-        console.log(updateBody);
-        // res.end();
 
         //retrieve all products
         fs.readFile(productFilePath, 'utf-8', (err, data) => {
@@ -104,7 +113,9 @@ function updateProductById(req, res, id){
                 const products = JSON.parse(data);
 
                 const productIndex = products.findIndex((product) => product.id === id );
-                products[productIndex] = { ...products[productIndex], ...updateBody};
+                products[productIndex] = {...products[productIndex],...updateBody};
+                // booksDB[bookIndex] = {...booksDB[bookIndex], ...bookToUpdate}; 
+
                 const updatedProducts = JSON.stringify(products);
                 //save product back into the database
                 fs.writeFile(productFilePath, updatedProducts, (err) => {
@@ -112,22 +123,15 @@ function updateProductById(req, res, id){
                         res.writeHead(500);
                         res.write('Unable to Update product');
                         res.end();
-                    }else{
-                        res.writeHead(201);
-                        res.write('Product Updated Successfully');
-                        res.end();
                     }
-                });
-                // console.log(products);
 
-                // console.log(products);
-                // res.end();
+                    res.writeHead(201);
+                    res.write('Product Updated Successfully');
+                    res.end();
+                });
             }
         })
-
-
     });
-
 }
 
 //delete a product from the database
@@ -136,7 +140,8 @@ function deleteProductById(req, res, id){
     // get the product from database 
     fs.readFile(productFilePath, 'utf8', (err, data) => {
         if(err){
-            console.log(err);
+            res.writeHead(500);
+            res.write('Unable to fetch Product');
             res.end();
         }
         const products = JSON.parse(data);
@@ -147,7 +152,6 @@ function deleteProductById(req, res, id){
         });
 
         if(productIndex === -1){
-            console.log('product not found');
             res.writeHead(404);
             res.end('Product Not Found');
         }
@@ -166,8 +170,6 @@ function deleteProductById(req, res, id){
             });
         }    
     });
-
-
 }
 
 module.exports = {

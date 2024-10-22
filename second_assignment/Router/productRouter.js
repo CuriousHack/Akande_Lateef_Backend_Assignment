@@ -1,6 +1,4 @@
-// const { getAllProducts } = require('../Controller/productController');
-const { createProduct } = require('../Controller/productController');
-const { getAllProducts, getProductById, updateProductById, deleteProductById } = require('../Controller/productController');
+const { getAllProducts, getProductById, updateProductById, deleteProductById, createProduct } = require('../Controller/productController');
 
 function productWithID(req, res){
     const id = req.url.split('/')[2];
