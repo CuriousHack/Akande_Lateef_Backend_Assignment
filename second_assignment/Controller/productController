@@ -9,11 +9,13 @@ function getAllProducts(req, res){
     fs.readFile(productFilePath, 'utf8', (err, data) => {
         if(err){
             res.writeHead(500);
-            res.write('Unable to fetch Products');
+            res.write(JSON.stringify({ "message": "Unable to fetch Products" } ));
             res.end();
         }
         const products = JSON.parse(data);
-        res.writeHead(200).end(JSON.stringify(products));
+        res.writeHead(200);
+        res.write(JSON.stringify({"message": "Products Retrieved", "data": products}));
+        res.end();
     });
 
     
@@ -25,7 +27,7 @@ function getProductById(req, res, id){
     fs.readFile(productFilePath, 'utf8', (err, data) => {
         if(err){
             res.writeHead(500);
-            res.write('Unable to fetch Product');
+            res.write(JSON.stringify({ "message": "Unable to fetch Product" }));
             res.end();
         }
         const products = JSON.parse(data);
@@ -37,11 +39,13 @@ function getProductById(req, res, id){
 
         if(productIndex === -1){
             res.writeHead(404);
-            res.write('Product not found');
+            res.write(JSON.stringify({ "message": "Product not found"}));
             res.end();        
+        }else {
+            res.writeHead(200);
+            res.write(JSON.stringify({"message": "Product retrieved Successfully", "data": products[productIndex]}));
+            res.end();
         }
-        res.writeHead(200);
-        res.end(JSON.stringify(products[productIndex]));
     });
 
 }
@@ -58,7 +62,7 @@ function createProduct(req, res){
         fs.readFile(productFilePath, 'utf-8', (err, data) => {
             if(err){
                 res.writeHead(500);
-                res.write('Unable to fetch Products');
+                res.write(JSON.stringify({ "message" : "Unable to fetch Products" }));
                 res.end();
 
             }else{
@@ -75,12 +79,12 @@ function createProduct(req, res){
                 fs.writeFile(productFilePath, allProducts, (err) => {
                     if(err){
                         res.writeHead(500);
-                        res.write('Unable to Save Product');
+                        res.write(JSON.stringify({ "message": "Unable to Save Product" }));
                         res.end();
                     }
                     else{
                         res.writeHead(201);
-                        res.write(JSON.stringify(products));
+                        res.write(JSON.stringify({ "message": "Product created successfully", "data": products }));
                         res.end();
                     }
                 });
@@ -106,7 +110,7 @@ function updateProductById(req, res, id){
         fs.readFile(productFilePath, 'utf-8', (err, data) => {
             if(err){
                 res.writeHead(500);
-                res.write('Unable to retrieve products');
+                res.write(JSON.stringify({ "message" : "Unable to retrieve products"}));
                 res.end();
             }
             else{
@@ -114,20 +118,19 @@ function updateProductById(req, res, id){
 
                 const productIndex = products.findIndex((product) => product.id === id );
                 products[productIndex] = {...products[productIndex],...updateBody};
-                // booksDB[bookIndex] = {...booksDB[bookIndex], ...bookToUpdate}; 
 
                 const updatedProducts = JSON.stringify(products);
                 //save product back into the database
                 fs.writeFile(productFilePath, updatedProducts, (err) => {
                     if(err){
                         res.writeHead(500);
-                        res.write('Unable to Update product');
+                        res.write(JSON.stringify({ "message": "Unable to Update product" }));
+                        res.end();
+                    } else{
+                        res.writeHead(201);
+                        res.write(JSON.stringify({ "message": "Product Updated Successfully", "data": products[productIndex]}));
                         res.end();
                     }
-
-                    res.writeHead(201);
-                    res.write('Product Updated Successfully');
-                    res.end();
                 });
             }
         })

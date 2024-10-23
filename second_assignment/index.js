@@ -20,7 +20,9 @@ function requestHandler(req, res){
     }
     //if the request does not match as intended, return 404 page
     else{
-        res.writeHead(404).end('Not found');
+        res.writeHead(404);
+        res.write(JSON.stringify({"message": "Not Found"}));
+        res.end();
     }
 
 }

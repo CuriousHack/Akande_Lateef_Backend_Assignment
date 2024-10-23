@@ -4,7 +4,9 @@ function productWithID(req, res){
     const id = req.url.split('/')[2];
     const parsedId = parseInt(id);
     if(isNaN(parsedId)){
-        res.writehead(400).end("Invalid Request");
+        res.writeHead(400)
+        res.write(JSON.stringify({ "message": "Invalid Request" }));
+        res.end();
     }
     //switch between the request methods and return the corresponding controller method.
     switch(req.method){
@@ -21,7 +23,9 @@ function productWithID(req, res){
             deleteProductById(req, res, parsedId);
             break;
         default:
-            res.writeHead(400).end("Invalid User Request");
+            res.writeHead(400)
+            res.write(JSON.stringify({ "message": "Invalid Request" }));
+            res.end();
     
     }
 }
@@ -37,7 +41,9 @@ function productWithoutId(req, res){
     }
     else{
         //return invalid request
-        res.writeHead(400).end('Invalid Request');
+        res.writeHead(400);
+        res.write(JSON.stringify({ "message": "Invalid Request" }));
+        res.end();
     }
 }
 
