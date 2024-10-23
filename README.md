@@ -1,56 +1,79 @@
-# Backend Assignment
+# First Backend Assignment
 
 ## Project Overview
 
-This project is a backend assignment designed to demonstrate proficiency in backend development. It includes the implementation of various features and functionalities using modern backend technologies.
+This project is a backend assignment designed to demonstrate proficiency in core Node.Js modules covering modules like Path, File System, Http and Process module.
 
-## Technologies Used
 
-- **Node.js**: JavaScript runtime for building scalable network applications.
-- **Express.js**: Web framework for Node.js.
-- **MongoDB**: NoSQL database for storing application data.
-- **Mongoose**: ODM for MongoDB and Node.js.
-- **JWT**: JSON Web Tokens for authentication.
+## #1 Assignment
 
-## Features
+Covers basic routing and rendering of HTML file. The task is to return the student basic data in a simple webpage if the url is `/index.html` and return a `404` page if the request `url` does not match.
 
-- User authentication and authorization
-- CRUD operations for managing resources
-- RESTful API endpoints
-- Data validation and error handling
-- Secure password storage
+## #2 Assignment
+
+Covers extended routing that makes use of the following request method `GET` `POST` `PUT` `PATCH` and `DELETE`.
+
+The task is to manage an inventory of items with `Node.Js` by being able to read, create, edit and delete an item from the inventory.
+
+The inventory items will be managed with a `JSON` file and not a `Database`.
+
+The codebase of this solution is expected to be `Modular in nature`, `Consistent in data structure being returned` and `handle error effectively` 
 
 ## Installation
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/backend-assignment.git
+    git clone https://github.com/CuriousHack/Akande_Lateef_Backend_Assignment.git
     ```
 2. Navigate to the project directory:
     ```bash
-    cd backend-assignment
-    ```
-3. Install dependencies:
-    ```bash
-    npm install
+    cd akande_lateef_backend-assignment
     ```
 
 ## Usage
+## First Assignment
 
-1. Start the development server:
+1. Navigate to the project directory
     ```bash
-    npm start
+    cd first_assignment
     ```
-2. Access the API at `http://localhost:3000`.
 
-## Contributing
+2. Start the development server:
+    ```bash
+    npm run server
+    ```
+3. Access the API at `http://localhost:8080`.
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
+## Second Assignment
+
+1. Navigate to the project directory
+    ```bash
+    cd second_assignment
+    ```
+
+2. Start the development server:
+    ```bash
+    npm run server
+    ```
+3. Access the API at `http://localhost:8080`.
+
+## PS
+In case PORT `8080` is in use in your local computer, custom `PORT` Number can be used to run the server.
+
+```bash
+npm run server {PORT}
+```
+replace `{PORT}` with your custom PORT Number and the server will be ready.
+
+example: 
+```bash
+npm run server 3000
+```
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the ISC License.
 
 ## Contact
 
-For any questions or feedback, please contact [your email address].
+For any questions or feedback, please contact akandelateef0@gmail.com.
