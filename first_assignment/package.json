@@ -1,0 +1,11 @@
+{
+  "name": "first_assignment",
+  "version": "1.0.0",
+  "description": "first AltSchool Backend Assignment #1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Akande Lateef",
+  "license": "ISC"
+}
