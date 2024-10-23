@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 
-const PORT = 8080;
+const PORT = process.argv[2] ?? 8080;
 const HOST_NAME = 'localhost';
 
 //create the server request handler function
